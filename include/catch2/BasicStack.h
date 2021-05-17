@@ -1,10 +1,15 @@
+
+#ifndef BASIC_STACK_H
+#define BASIC_STACK_H
+
 #include <Stack.h>
 #include <string>
 
 using namespace std;
 
-class BasickStack: public Stack{
-    private:
+class BasicStack: public Stack{
+    
+    protected:
         string elements;
     
     public:
@@ -82,3 +87,5 @@ class BasickStack: public Stack{
        virtual string popn(const int n);
  
 };
+
+#endif

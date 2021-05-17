@@ -7,7 +7,7 @@ using namespace std;
 /** RETURN the size of the stack
  
 */
-int BasickStack::size() const{
+int BasicStack::size() const{
     if(this->elements.size() < 0){
         throw invalid_argument("Negative size!!");
     }
@@ -17,7 +17,7 @@ int BasickStack::size() const{
 /** Return a string like 
         Stack: elements='ab'
 */
-string BasickStack::as_string() const{
+string BasicStack::as_string() const{
     if(this->elements.size() < 0){
         throw invalid_argument("Negative size!!");
     }
@@ -26,18 +26,15 @@ string BasickStack::as_string() const{
 
 /** RETURN True if the stack empty, False otherwise
  */
-bool BasickStack::is_empty() const{
+bool BasicStack::is_empty() const{
     return this->elements.size() == 0;
 }
 
 
 /** Adds item to the top of the stack
 */
-void BasickStack::push(const char c){
-    for(int i=this->elements.size()+1;i>0;i--){
-        this->elements[i]=this->elements[i-1];
-    }
-    this->elements[0]=c;
+void BasicStack::push(const char c){
+    this->elements.push_back(c);
 }
 
 /** RETURN the top element in the stack (without removing it!)
@@ -45,65 +42,49 @@ void BasickStack::push(const char c){
         - if stack is empty, throw std::runtime_error
 
 */
-char BasickStack::peek() const {
+char BasicStack::peek() const {
     if(is_empty()){
         throw runtime_error("Stack empty!!");
     }
-    return this->elements[0];
+    return this->elements.back();
 }
 
 /** Removes the top element in the stack and RETURN it.
  
         - if stack is empty, throw std::runtime_error
 */
-char BasickStack::pop(){
+char BasicStack::pop(){
     if(is_empty()){
         throw runtime_error("Stack empty!!");
     }
-    char toPop = this->elements[0];
-    int i;
-    for(i=0;i<this->elements.size()-1;i++){
-        this->elements[i] = this->elements[i+1];
-    }
-    this->elements[i] = NULL;
+    char toPop = this->elements.back();
+    this->elements.pop_back();
     return toPop;
 };
 
-/**
-     RETURN a string with the n top elements, in the order in which they
-    were pushed. For example, if the stack is the following:
-    
-        e
-        d
-        c
-        b
-        a
-        
-    peekn(3) will return the string 'cde'
 
-    - If there aren't enough element to peek, throw std::invalid_argument
-    - If n is negative, throw std::invalid_argument
-*/
-virtual string peekn(const int n) const = 0;
+string BasicStack::peekn(const int n) const{
+    if(this->elements.size() < 0){
+        throw invalid_argument("Negative size!!");
+    }
+    if(this->elements.size() >= n){
+        string ret;
+        int i = this->elements.size() - n;
+        ret = this->elements.substr(i);
+        return ret;
+    }   
+    throw std::invalid_argument(string("Requested to peek ") 
+                        + to_string(n) 
+                        + string(" elements, but  there are only ")
+                        + to_string(this->size())
+                        + string(" in the stack! "));
+}
 
-/**
-     Pops the top n elements, and RETURN them as a string, in the order in
-    which they where pushed. For example, with the following stack:
-    
-        e
-        d
-        c
-        b
-        a
-    
-    popn(3)
-    
-    will give back 'cde', and stack will become:
-    
-        b
-        a
-    
-    - If there aren't enough element to pop, throw std::invalid_argument
-    - If n is negative, throw std::invalid_argument
-*/
-virtual string popn(const int n) = 0;
+
+string BasicStack::popn(const int n){
+    string ret = peekn(n);
+    int i = this->elements.size() - n;;
+    this->elements = this->elements.substr(0,i-1);
+
+    return ret;
+}
